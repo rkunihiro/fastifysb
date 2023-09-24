@@ -1,0 +1,42 @@
+services:
+  # DB (MySQL/MariaDB) container
+  # https://hub.docker.com/_/mysql
+  # https://hub.docker.com/_/mariadb
+  db:
+    container_name: fastifysb-container-db
+    image: mysql:8.1.0
+    # image: mariadb:11.1.2-jammy
+    platform: linux/amd64
+    environment:
+      LANG: C.UTF-8
+      TZ: Z
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: dbname
+      MYSQL_USER: username
+      MYSQL_PASSWORD: password
+    networks:
+      - default
+    ports:
+      - 3306:3306
+    volumes:
+      - ./docker/db/conf:/etc/mysql/conf.d:ro
+      - ./docker/db/init:/docker-entrypoint-initdb.d:ro
+
+  # Redis container
+  # https://hub.docker.com/_/redis
+  # https://redis.io/topics/config
+  redis:
+    container_name: fastifysb-container-redis
+    image: redis:7.2.1-bookworm
+    platform: linux/amd64
+    environment:
+      LANG: C.UTF-8
+      TZ: Z
+    networks:
+      - default
+    ports:
+      - 6379:6379
+
+networks:
+  default:
+    name: fastifysb-network-default
